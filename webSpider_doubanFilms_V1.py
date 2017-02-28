@@ -2,6 +2,7 @@
 豆瓣爬虫V1:返回排行榜电影名字
 V2:将会接入api提取json分析每部电影的细节
 Introduction: This program is output the title-lists of top ten latest movie charts to a csv file
+* May need to install package
 __author__ = v1siuol
 __date__ = 2017.2.27
 """

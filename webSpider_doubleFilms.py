@@ -4,7 +4,7 @@ V2:将会接入api提取json分析每部电影的细节
 Introduction: This program is output the title-lists of top ten latest movie charts to a csv file
 * May need to install package
 __author__ = v1siuol
-__date__ = 2017.2.27
+__date__ = 2017-02-27
 """
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
@@ -19,14 +19,17 @@ def main():
     csvFile = open("./lstMoviesTitles.csv", "w+")
     try:
         writer = csv.writer(csvFile)
+        print("Top 10 films titles list will be written into lstMoviesTitles.csv, located in the same folder. ")
         writer.writerow(["豆瓣新片榜"])
         for i in lstMovies:
             writer.writerow([i['title']])
     finally:
         csvFile.close()
-    print("------------------------------------End")
+
+    print("------------------------------------Completed")
+
 
 # -------------test case-----------------
 if __name__ == "__main__":
-    if False:
+    if True:
         main()

@@ -101,7 +101,7 @@ ENV/
 .mypy_cache/
 
 .DS_Store
-.env
+#.env
 .flaskenv
 *.pyc
 *.pyo
@@ -109,11 +109,11 @@ env
 env*
 dist
 build
-*.egg
+#*.egg
 *.egg-info
 _mailinglist
 .tox
 .cache/
-.idea/
+#.idea/
 
 *.csv # output only for test in local

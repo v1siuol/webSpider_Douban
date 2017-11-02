@@ -1,12 +1,11 @@
 """
-豆瓣爬虫V2: 返回豆瓣排行榜上每部电影的数据细节(不再只是电影名!); 表头新增更新时间
-V2.1: 将会对数据细节进行优化并加上适当注释
+豆瓣爬虫V2.1: 用beautifulsoup库获取豆瓣排行榜上每部电影的有利于分析的数据细节再写入csv文件
 V3: 将对数据进行细致处理并可视化 *更新日期待定
 Introduction: This program is to output the information of each movie in the top ten latest movie charts to a csv file
 ** API由豆瓣提供: https://developers.douban.com/wiki/?title=movie_v2#subject
 
 __author__ = v1siuol
-__date__ = 2017-03-22
+__date__ = 2017-03-23
 """
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
@@ -18,71 +17,93 @@ import time
 
 def main():
     print("Begin----------------------------------")
-    html = urlopen("https://movie.douban.com/chart")
-    bs0bj = BeautifulSoup(html, "lxml")
-    csvFile = open("./lstMoviesCharts.csv", "w+")
-    lstMovies = bs0bj.find("div", {"class": "indent"}).findAll("div", {"id": re.compile("collect_form_\d+")})
-    lstMoviesId = [i.attrs["id"][13:] for i in lstMovies]
+    startTime = time.time()
+    showTimeSet = "%Y-%m-%d %X"
+    filePath = "./"
+    fileName = "lstMoviesAnaCharts.csv"
+    chartUrl = "https://movie.douban.com/chart"
     baseUrl = "https://api.douban.com/v2/movie/subject/"
     counter = 0
-    showTimeSet = "%Y-%m-%d %X"
+
+    # 打开或创建csv文件 / Open or create a csv file
+    csvFile = open(filePath + fileName, "w+")
+
+    # 从豆瓣新片榜获取电影id / Retrieve movie_id from top ten latest movie charts
+    html = urlopen(chartUrl)
+    bs0bj = BeautifulSoup(html, "lxml")
+    lstMovies = bs0bj.find("div", {"class": "indent"}).findAll("div", {"id": re.compile("collect_form_\d+")})
+    lstMoviesId = [movie.attrs["id"][13:] for movie in lstMovies]
 
     try:
+        # 在csv文件创建表头 / Create the headings in csv file
         writer = csv.writer(csvFile)
-        print("* Top 10 films info will be written into lstMoviesCharts.csv, located in the same folder. *")
-        writer.writerow(["Updated time: " + time.strftime(showTimeSet, time.localtime(time.time()))])
-        writer.writerow(("条目id", "中文名", "原名", "又名", "条目页URL", "移动版条目页URL", "评分", "评分人数",
-                         "想看人数", "看过人数", "在看人数", "电影海报图", "条目分类", "导演", "主演", "豆瓣小站",
-                         "年代", "影片类型", "制片国家/地区", "简介", "短评数量", "影评数量", "总季数", "当前季数",
-                         "当前季的集数", "影讯页URL", "分享链接"))
+        print("* Top 10 films info will be written into lstMoviesAnaCharts.csv, located in the same folder. *")
+        writer.writerow(["Updated time: " + time.strftime(showTimeSet, time.localtime(startTime))])
+        writer.writerow(("条目id", "原名", "导演名字", "主演名字", "制片国家/地区", "影片类型", "平均评分",
+                         "年代", "评分人数", "想看人数", "看过人数", "短评数量", "影评数量"))
     except Exception as e:
         print("Exception:", e)
-    for i in lstMoviesId:
-        responseJson = json.loads(urlopen(baseUrl + i).read().decode("utf-8"))  # {}
+
+    for mId in lstMoviesId:
+        # 接入api并解析json / Get data from api and deal with json
+        responseJson = json.loads(urlopen(baseUrl + mId).read().decode("utf-8"))  # {}
 
         movieId = responseJson["id"]  # 条目id
-        movieTitle = responseJson["title"]  # 中文名
         movieOriginalTitle = responseJson["original_title"]  # 原名
-        movieAka = responseJson["aka"]  # 又名
-        movieAlt = responseJson["alt"]  # 条目页URL
-        movieMobileUrl = responseJson["mobile_url"]  # 移动版条目页URL
         movieRating = responseJson["rating"]  # 评分
+        movieAveRating = movieRating["average"]  # 平均评分
         movieRatingsCount = responseJson["ratings_count"]  # 评分人数
         movieWishCount = responseJson["wish_count"]  # 想看人数
         movieCollectCount = responseJson["collect_count"]  # 看过人数
-        movieDoCount = responseJson["do_count"]  # 在看人数，如果是电视剧，默认值为0，如果是电影值为null
-        movieImages = responseJson["images"]  # 电影海报图，分别提供288px x 465px(大)，96px x 155px(中) 64px x 103px(小)尺寸
-        movieSubtype = responseJson["subtype"]  # 条目分类, movie或者tv
+
         movieDirectors = responseJson["directors"]  # 导演，数据结构为影人的简化描述
+        movieDirectorsName = ""  # 导演名字
+        for director in movieDirectors:
+            movieDirectorsName += director["name"]
+            if director != movieDirectors[-1]:
+                movieDirectorsName += " / "
+
         movieCasts = responseJson["casts"]  # 主演，最多可获得4个，数据结构为影人的简化描述
-        movieDoubanSite = responseJson["douban_site"]  # 豆瓣小站
+        movieCastsName = ""  # 主演名字
+        for cast in movieCasts:
+            movieCastsName += cast["name"]
+            if cast != movieCasts[-1]:
+                movieCastsName += " / "
+
         movieYear = responseJson["year"]  # 年代
         movieGenres = responseJson["genres"]  # 影片类型，最多提供3个
+        movieGenresName = ""  # 影片类型名字
+        for genre in movieGenres:
+            movieGenresName += genre
+            if genre != movieGenres[-1]:
+                movieGenresName += " / "
+
         movieCountries = responseJson["countries"]  # 制片国家/地区
-        movieSummary = responseJson["summary"]  # 简介
+        movieCountriesName = ""  # 制片国家/地区名字
+        for country in movieCountries:
+            movieCountriesName += country
+            if country != movieCountries[-1]:
+                movieCountriesName += " / "
+
         movieCommentsCount = responseJson["comments_count"]  # 短评数量
         movieReviewsCount = responseJson["reviews_count"]  # 影评数量
-        movieSeasonsCount = responseJson["seasons_count"]  # 总季数(tv only)
-        movieCurrentSeason = responseJson["current_season"]  # 当前季数(tv only)
-        movieEpisodesCount = responseJson["episodes_count"]  # 当前季的集数(tv only)
-        movieScheduleUrl = responseJson["schedule_url"]  # 影讯页URL(movie only)
-        movieShareUrl = responseJson["share_url"]  # 分享链接 看起来像移动端链接??
 
         try:
-            writer.writerow((movieId, movieTitle, movieOriginalTitle, movieAka, movieAlt, movieMobileUrl,
-                             movieRating, movieRatingsCount, movieWishCount, movieCollectCount, movieDoCount,
-                             movieImages,
-                             movieSubtype, movieDirectors, movieCasts, movieDoubanSite, movieYear, movieGenres,
-                             movieCountries, movieSummary, movieCommentsCount, movieReviewsCount, movieSeasonsCount,
-                             movieCurrentSeason, movieEpisodesCount, movieScheduleUrl, movieShareUrl))
+            # 把处理好的数据写入csv文件 / Write data into the csv file
+            writer.writerow((movieId, movieOriginalTitle, movieDirectorsName, movieCastsName, movieCountriesName,
+                             movieGenresName, movieAveRating, movieYear, movieRatingsCount,
+                             movieWishCount, movieCollectCount, movieCommentsCount, movieReviewsCount))
             counter += 1
         except Exception as e:
             print("Exception:", e)
 
         print("Finished %d/%d" % (counter, len(lstMoviesId)))
+        # 设置爬虫间隔2s(公开api接口: 40次请求/分钟) / Set the crawl span 2 seconds (public api: 40 requests per minute)
         time.sleep(2)
+    # 关闭csv文件 / Close csv file
     csvFile.close()
     print("------------------------------------End")
+    print("Time elapsed: %.6f(s)" % (time.time() - startTime))
 
 
 # -------------test case-----------------

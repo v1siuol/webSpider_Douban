@@ -1,6 +1,6 @@
 """
-豆瓣爬虫V2.1: 返回豆瓣排行榜上每部电影的数据细节(不再只是电影名!); 表头新增更新时间
-V2.2: 将会对数据细节进行优化并加上适当注释 *将于两天内更新
+豆瓣爬虫V2: 返回豆瓣排行榜上每部电影的数据细节(不再只是电影名!); 表头新增更新时间
+V2.1: 将会对数据细节进行优化并加上适当注释
 V3: 将对数据进行细致处理并可视化 *更新日期待定
 Introduction: This program is to output the information of each movie in the top ten latest movie charts to a csv file
 ** API由豆瓣提供: https://developers.douban.com/wiki/?title=movie_v2#subject
@@ -29,7 +29,7 @@ def main():
 
     try:
         writer = csv.writer(csvFile)
-        print("* Top 10 films charts will be written into lstMoviesCharts.csv, located in the same folder. *")
+        print("* Top 10 films info will be written into lstMoviesCharts.csv, located in the same folder. *")
         writer.writerow(["Updated time: " + time.strftime(showTimeSet, time.localtime(time.time()))])
         writer.writerow(("条目id", "中文名", "原名", "又名", "条目页URL", "移动版条目页URL", "评分", "评分人数",
                          "想看人数", "看过人数", "在看人数", "电影海报图", "条目分类", "导演", "主演", "豆瓣小站",

@@ -114,6 +114,9 @@ build
 _mailinglist
 .tox
 .cache/
-#.idea/
+.idea/
 
-*.csv # output only for test in local
+# output only for test in local
+*.csv
+
+

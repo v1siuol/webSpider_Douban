@@ -1,6 +1,5 @@
-## webSpider_Douban
-[![license][badge-license]][license]
-
+# webSpider_Douban
+[![author][badge-author]][author] [![ci-master][ci-master-img]][ci-page] [![py-version][badge-py-version]][pypi] [![state][badge-state]][pypi] [![version][badge-license]][license]
 
 ## V1:
 返回排行榜电影名字
@@ -41,11 +40,11 @@ aini.run()  # Fetch data
 # The process normally take 38 seconds.
 ```
 ## Issues
-###问题
+### 问题
 1: CSV文件用Mac上的Excel2016打开出现乱码。
-###原因
+### 原因
 1: 我在Mac上开发的，Mac上的Excel2016的中文编码方式是GB18030而不是UTF8。
-###解决方法
+### 解决方法
 1:
 
 a) CSV文件直接用Numbers打开；
@@ -55,11 +54,17 @@ c) 命令行
 cd 到目标路径
 iconv -f UTF8 -t GB18030 old_name.csv >new_name.csv
 ```
-###More
+### More
 Please contact bHZ6aC5sb3VpczIwMTNAZ21haWwuY29t
 
+[badge-author]: https://img.shields.io/badge/author-v1siuol-blue.svg
+[badge-state]: https://img.shields.io/pypi/status/webSpider-Douban.svg
+[badge-py-version]: https://img.shields.io/pypi/pyversions/webSpider-Douban.svg
+[badge-license]: https://img.shields.io/pypi/l/webSpider-Douban.svg
+[ci-master-img]: https://travis-ci.org/v1siuol/webSpider_Douban.svg?branch=master
 
-[badge-version]: https://img.shields.io/github/license/v1siuol/webSpider_Douban.svg
-
+[author]: https://github.com/v1siuol
 [pypi]: https://pypi.python.org/pypi/webSpider-Douban
 [license]: https://github.com/v1siuol/webSpider_Douban/blob/master/LICENSE.txt
+[ci-page]: https://travis-ci.org/v1siuol/webSpider_Douban
+

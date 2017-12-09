@@ -1,8 +1,6 @@
-from webSpider_Douban.webSpider_doubanFilms import webSpider_duobanFilms
-
+from webSpider_Douban.Crawler import Crawler
+from webSpider_Douban.Movie import Movie
 
 def main():
     """Entry point for the application script"""
-    if True:
-        love = webSpider_duobanFilms(1)
-        love.for_love()
+    """Call your main application code here"""

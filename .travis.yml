@@ -1,0 +1,20 @@
+# https://travis-ci.org/tornadoweb/tornado
+dist: trusty
+
+language: python
+
+python:
+  - 3.5
+
+script:
+  - py.test
+
+install: pip install --user -r requirements.txt
+
+notifications:
+  email:
+    recipients:
+      - lvzh.louis2013@gmail.com
+    on_success: change
+    on_failure: always
+

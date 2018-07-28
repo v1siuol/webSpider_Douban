@@ -8,7 +8,7 @@ Introduction: This program is to output the information of each movie in the top
 ** API由豆瓣提供: https://developers.douban.com/wiki/?title=movie_v2#subject
 
 __author__ = v1siuol
-__date__ = 2017-12-09
+__date__ = 2018-07-28
 """
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
@@ -77,6 +77,14 @@ class Crawler:
         print('  .run()\t\t\t\t\t\t\t\t\t\t\t\t\tAutomatically build and output.')
         print()
 
+    def achieve_id(self):
+        chart_url = 'https://movie.douban.com/chart'
+        html = urlopen(chart_url)
+        bs0bj = BeautifulSoup(html, 'lxml')
+        lst_movies = bs0bj.find('div', {'class': 'indent'}).findAll('div', {'id': re.compile('collect_form_\d+')})
+        lst_movies_id = [movie.attrs['id'][13:] for movie in lst_movies]
+        return lst_movies_id
+
     def build(self):
         print('--Begin to fetch data------------------')
         print()
@@ -90,8 +98,8 @@ class Crawler:
 
         # 从豆瓣新片榜获取电影id / Retrieve movie_id from top ten latest movie charts
         html = urlopen(chart_url)
-        bs0bj = BeautifulSoup(html, 'html.parser')
-        # bs0bj = BeautifulSoup(html, 'lxml')
+        # bs0bj = BeautifulSoup(html, 'html.parser')
+        bs0bj = BeautifulSoup(html, 'lxml')
         lst_movies = bs0bj.find('div', {'class': 'indent'}).findAll('div', {'id': re.compile('collect_form_\d+')})
         lst_movies_id = [movie.attrs['id'][13:] for movie in lst_movies]
 

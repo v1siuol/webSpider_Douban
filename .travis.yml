@@ -17,4 +17,3 @@ notifications:
       - lvzh.louis2013@gmail.com
     on_success: change
     on_failure: always
-

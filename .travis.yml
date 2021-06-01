@@ -9,7 +9,7 @@ python:
 script:
   - py.test
 
-install: pip install --user -r requirements.txt
+install: pip install -r requirements.txt
 
 notifications:
   email:

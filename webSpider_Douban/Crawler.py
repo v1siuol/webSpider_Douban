@@ -24,8 +24,8 @@ from webSpider_Douban.Movie import Movie
 class Crawler:
     def __init__(self, info_option='1', output_option='1'):
 
-        self.__movies = []  # avoid modifying
-        self.__start_time = None  # avoid modifying
+        self.__movies = []
+        self.__start_time = None
         self.file_path = None
         self.file_name = None
         self.set_info_option(info_option)
@@ -78,6 +78,7 @@ class Crawler:
         print()
 
     def achieve_id(self):
+        # 从豆瓣新片榜获取电影id / Retrieve movie_id from top ten latest movie charts
         chart_url = 'https://movie.douban.com/chart'
         html = urlopen(chart_url)
         bs0bj = BeautifulSoup(html, 'lxml')
@@ -91,17 +92,18 @@ class Crawler:
         # current_movie = Movie()
         self.__set_start_time()
 
-        chart_url = 'https://movie.douban.com/chart'
+        # chart_url = 'https://movie.douban.com/chart'
         base_url = 'https://api.douban.com/v2/movie/subject/'
         counter = 0
         tempi = 1
 
-        # 从豆瓣新片榜获取电影id / Retrieve movie_id from top ten latest movie charts
-        html = urlopen(chart_url)
-        # bs0bj = BeautifulSoup(html, 'html.parser')
-        bs0bj = BeautifulSoup(html, 'lxml')
-        lst_movies = bs0bj.find('div', {'class': 'indent'}).findAll('div', {'id': re.compile('collect_form_\d+')})
-        lst_movies_id = [movie.attrs['id'][13:] for movie in lst_movies]
+        # # 从豆瓣新片榜获取电影id / Retrieve movie_id from top ten latest movie charts
+        # html = urlopen(chart_url)
+        # # bs0bj = BeautifulSoup(html, 'html.parser')
+        # bs0bj = BeautifulSoup(html, 'lxml')
+        # lst_movies = bs0bj.find('div', {'class': 'indent'}).findAll('div', {'id': re.compile('collect_form_\d+')})
+        # lst_movies_id = [movie.attrs['id'][13:] for movie in lst_movies]
+        lst_movies_id = self.achieve_id()
 
         for mId in lst_movies_id:
             # 接入api并解析json / Get data from api and deal with json

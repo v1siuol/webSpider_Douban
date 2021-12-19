@@ -10,7 +10,7 @@ Introduction: This program is to output the information of each movie in the top
 __author__ = v1siuol
 __date__ = 2018-07-28
 """
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 import csv
 import random
@@ -18,7 +18,7 @@ import re
 import json
 import time
 import os
-from webSpider_Douban.Movie import Movie
+from Movie import Movie
 
 
 class Crawler:
@@ -30,6 +30,9 @@ class Crawler:
         self.file_name = None
         self.set_info_option(info_option)
         self.set_output_option(output_option)
+        self.fake_headers =  {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+        # Ref: https://www.doubanapi.com/
+        self.apiKey = '0df993c66c0c636e29ecbb5344252a4a'
 
     def set_info_option(self, info_option='1'):
         # info_option:1 for short, 2 for details
@@ -80,7 +83,8 @@ class Crawler:
     def achieve_id(self):
         # 从豆瓣新片榜获取电影id / Retrieve movie_id from top ten latest movie charts
         chart_url = 'https://movie.douban.com/chart'
-        html = urlopen(chart_url)
+        req = Request(url=chart_url, headers=self.fake_headers)
+        html = urlopen(req)
         bs0bj = BeautifulSoup(html, 'lxml')
         lst_movies = bs0bj.find('div', {'class': 'indent'}).findAll('div', {'id': re.compile('collect_form_\d+')})
         lst_movies_id = [movie.attrs['id'][13:] for movie in lst_movies]
@@ -97,17 +101,13 @@ class Crawler:
         counter = 0
         tempi = 1
 
-        # # 从豆瓣新片榜获取电影id / Retrieve movie_id from top ten latest movie charts
-        # html = urlopen(chart_url)
-        # # bs0bj = BeautifulSoup(html, 'html.parser')
-        # bs0bj = BeautifulSoup(html, 'lxml')
-        # lst_movies = bs0bj.find('div', {'class': 'indent'}).findAll('div', {'id': re.compile('collect_form_\d+')})
-        # lst_movies_id = [movie.attrs['id'][13:] for movie in lst_movies]
         lst_movies_id = self.achieve_id()
 
         for mId in lst_movies_id:
             # 接入api并解析json / Get data from api and deal with json
-            response_json = json.loads(urlopen(base_url + mId).read().decode('utf-8'))  # {}
+            url = '{}{}?apikey={}'.format(base_url, mId, self.apiKey)
+            req = Request(url=url, headers=self.fake_headers)
+            response_json = json.loads(urlopen(req).read().decode('utf-8'))  # {}
             # print(response_json)
             current_movie = Movie()
 

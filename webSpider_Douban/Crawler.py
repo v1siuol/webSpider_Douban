@@ -96,7 +96,6 @@ class Crawler:
         # current_movie = Movie()
         self.__set_start_time()
 
-        # chart_url = 'https://movie.douban.com/chart'
         base_url = 'https://api.douban.com/v2/movie/subject/'
         counter = 0
         tempi = 1

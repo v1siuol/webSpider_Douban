@@ -16,7 +16,7 @@ lxml==4.6.5
     # via webSpider-Douban (setup.py)
 mysql-connector-python==8.0.5
     # via webSpider-Douban (setup.py)
-numpy==1.13.3
+numpy==1.22.0
     # via pandas
 pandas==0.21.0
     # via webSpider-Douban (setup.py)
